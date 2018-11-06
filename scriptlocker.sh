@@ -32,14 +32,16 @@ _scripts_info () {
 
 _script_loader () {
   # INCLDUE_SCRIPTS_IN_PATH=
-  # DEFAULTS TO FALSE, SINCE MANY OF THE SCRIPTS HERE ARE MEANT TO BE RUN ONE TIME OR DO SOEMTHING SPECIFIC ENOUGH THAT
-  # WE DO NOT WANT OT EXECUTE THEM ACCIDENTALLY. The bin/ folder is already added to the path. Scripts here are meant for
-  # more complicated operations.
+  # DEFAULTS TO FALSE, SINCE MANY OF THE SCRIPTS HERE ARE MEANT TO BE RUN ONE TIME
+  # OR DO SOEMTHING SPECIFIC ENOUGH THAT WE DO NOT WANT OT EXECUTE THEM ACCIDENTALLY. 
+  # The /bin folder is already added to the path. Scripts here are meant be stored outside the default
+  # path since they are accessed through a scpecial command. 
+  
   # Default 
   ENABLE_SCRIPTLOCKER=true
   ENABLE_SCRIPTLOCKER_LOADER=true
   if [ -z $ENABLE_SCRIPTLOCKER ]; then
-    echo "criptloader is not enabled. Set ENABLE_SCRIPTLOCKER=true in your environment file"
+    echo "scriptloader is not enabled. Set ENABLE_SCRIPTLOCKER=true in your environment file"
     return
   fi
 
