@@ -18,3 +18,11 @@ Scriptlocker handles script retrieval, storage and execution
 ### Planned 
 - Provide builtin safety features for safter execution .lt in safety net, 
 - Process monitoring and stats for basic script performance, and usage (collected data stays where it came from)
+
+
+
+
+---
+
+This is currently only a concept.  See related project [commandctl](https://github.com/charrismatic/commandctl) bash command alias manager for working prototype.
+
