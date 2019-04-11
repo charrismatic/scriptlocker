@@ -1,0 +1,105 @@
+#!/bin/bash
+
+
+# command [-pVv] command [arg ...]
+#   causes  a single word indicating the command or filename used to invoke command to be displayed;
+#    the -V option produces a more verbose description.
+#   If the -V or -v option is supplied, the exit status is 0 if command was found, and 1 if not.
+#   If neither option is supplied and an error occurred or command cannot be found, the exit status is 127.
+#   Otherwise, the exit status of the  command builtin is the exit status of command.
+#
+
+function commandctl_list_paths () {
+  echo "SHELL PATH: $LIB0_SHELLPATH"
+  echo "COMMANDS PATH: $LIB0_CMDPATH"
+}
+
+
+function commandctl_list_groups () {
+  echo "SHELL PATH: $LIB0_SHELLPATH"
+  echo "COMMANDS PATH: $LIB0_CMDPATH"
+}
+
+# commandctl_list_commands () {
+#     COMMGROUP=.${$1:"all"}
+#     # SEARCH_PHRASE="                                             "
+#     COMMAND_BASEPATH=${LIB0_CMDPATH:-$HOME/0/shell/cmd}
+#     COMMAND_PKGPATH  $COMMAND_BASEPATH/$COMMGROUP
+#     # FILTER_REMOVE="                                             "
+#     STOPWORDS="\#\#"
+#     echo "COMMGROUP $COMMGROUP"
+#     echo "ALIAS_PKGPATH $ALIAS_PKGPATH"
+#     REGEX_STOPPATTERN
+#     cat ${ALIAS_PKGREP PATH} | grep -v \#\# | grep -e 'alias\|[\-|]' \
+#       | sed 's/alias/\-/;s/\"\s*$//;s/=\"/ __->;/' | sed 's/^\# \/\-/\n\n\# -/' \
+#       | sed 's/^\(.*\)\s*__/\1                                             /' \
+#       | sed 's/^\(.*\)\(\s\{,30\}\);/\1 \2/g' | sed 's/^\(.\{15,30\}\).*->/\1/' \
+#       | less --chop-long-lines
+#       # -----------------------------------------------------------------------------
+#     # cat ~/lib/bash/aliases/.aliases.system | \
+#       # grep -v \#\# | \
+#       # grep -e '/alias\|\#\|alias' \
+#       # | sed 's/^\# \=/\n\# \=/'  > aliaslist.sh
+# }
+
+commandctl_list_commands () {
+   alias -p | grep -v \#\# | grep -e 'alias' \
+     | sed 's/alias//;s/^\s*//;s/^\([a-zA-Z0-9\.\_\-]*\)\=/\1                                   /' \
+     | sed 's/\([a-zA-Z0-9 \.\_\-]\{,25\}\)\(\s*\)/\1\t/' ;
+}
+
+
+commandctl_show_alias_groups () {
+  CMD_GROUP=${1:-all}
+  echo "[ALIAS GROUPS]
+"
+  echo $LIB0_CMDPATH
+  cat $LIB0_CMDPATH/$CMD_GROUP | grep "@pkg" | grep -v "grep" | sed 's/^\. \$ALIAS\_PATH\/\.aliases/ /;s/\# \@pkg//'
+  LIB0_CMDPATH:-$H
+}
+
+
+commandctl_alias_manager () {
+    COMCTL_ACTION=${1:-list}
+    COMMAND_GROUP_PKG=${2:-all}
+    MAINDIR_COMMAND=$LIB0_SHELLPATH
+    CMDFILEPATH=$LIB0_CMDPATH/$CMD_GROUP.$CMD_TYPE.$PKG_NAME
+    MSG="BASH LIB ALIAS ALIAS_PKGPATH"
+    LIB0_CMDPATH=$LIB0_SHELLPATH/cmd
+    LIB0_CMDPATH=$LIB0_SHELLPATH/cmd
+    echo "$MSG"
+    echo "Action: "$ACTION
+    echo "Selection:" $ALIAS_PKG
+
+    case $ACTION in
+       groups) commandctl_show_alias_groups all;;
+       search) commandctl_list_aliases | grep -i --color $2 ;;
+         list) commandctl_show_aliases $1 ;;
+         edit) nano $ALIAS_PKGPATH ;;
+         goto) cd $ALIAS_PKGBASE ;;
+       reload) source $ALIAS_MAINPATH ;;
+         *) commandctl_alias_help ;;
+    esac
+
+    unset ALIAS_MAINDIR
+    unset ALIAS_MAINPATH
+    unset COMMGROUP
+    unset ALIAS_PKGDIR
+    unset ALIAS_PKGPATH
+    unset ALIAS_PKGBASE
+    unset ALIAS_PKGPATH
+}
+
+
+# =============================================================================
+# META ALIASES AND MANAGEMENT FUNCTIONS
+# =============================================================================
+alias cmdctl="commandctl_alias_manager"
+alias cmdctl.list="commandctl_list_aliases"
+alias cmdctl.show="commandctl_show_aliases"
+alias cmdctl.groups="commandctl_alias_manager groups"
+alias cmdctl.search="commandctl_alias_manager search"
+alias cmdctl.goto="commandctl_alias_manager goto"
+alias cmdctl.edit="commandctl_alias_manager edit"
+alias cmdctl.reload="commandctl_alias_manager reload"
+alias ls.aliases="commandctl_list_aliases"
